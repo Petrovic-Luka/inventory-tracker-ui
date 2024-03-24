@@ -1,30 +1,21 @@
 import { useState, useEffect, React } from "react";
 import style from "./HomePage.module.css";
+import { fetchData } from "../../functions";
+import Menu from "../../components/Menu";
 const HomePage = () => {
   const [data, setData] = useState([]);
-  const fetchData = async () => {
-    try {
-      const response = await fetch("https://localhost:7274/ClassRoom");
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-  fetchData();
+  fetchData("https://localhost:7274/ClassRoom", setData);
   return (
     <div>
-      <ul>
+      <Menu></Menu>
+      {/* <ul>
         {data.map((classRoom) => (
-          <li>
-            {classRoom.classRoomId}
-            {classRoom.name}
-          </li>
+          <div>
+            <li>{classRoom.classRoomId}</li>
+            <li>{classRoom.name}</li>
+          </div>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 };

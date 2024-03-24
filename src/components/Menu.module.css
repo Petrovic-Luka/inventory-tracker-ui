@@ -1,0 +1,22 @@
+.mainMeni {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 7vw;
+  z-index: 9;
+  border-bottom: 1px solid black;
+  overflow-x: hidden;
+}
+
+.meni_container {
+  display: flex;
+  gap: 4vw;
+}
+
+.meni_container a {
+  font-family: "Jost";
+  font-weight: normal;
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: black;
+}
