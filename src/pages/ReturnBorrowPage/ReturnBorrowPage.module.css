@@ -1,0 +1,18 @@
+.ReturnBorrowPage {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.Container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.5rem;
+}
+
+.Container input {
+  font-size: 1.5rem;
+}

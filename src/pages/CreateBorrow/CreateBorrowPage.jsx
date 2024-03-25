@@ -23,11 +23,14 @@ const CreateBorrowPage = () => {
         setEquipmentTypes(postsData);
         const postsData2 = await fetchData("https://localhost:7274/Employee");
         setEmployees(postsData2);
+        setEmployeeId(postsData2[0].employeeId);
 
         const postsData3 = await fetchData("https://localhost:7274/ClassRoom");
         setClassRooms(postsData3);
+        setClassRoomId(postsData3[0].classRoomId);
       } catch (err) {
-        setEquipmentTypes(null);
+        alert("Connection to server failed");
+        return;
       }
     };
     fetchData2();
@@ -37,22 +40,23 @@ const CreateBorrowPage = () => {
     console.log("Equipment " + equipmentId);
     console.log("Employee " + employeeId);
 
-    SetBorrow({
+    let temp = {
       employeeId: employeeId,
       equipmentId: equipmentId,
       classRoomId: classRoomId,
-    });
-    console.log(JSON.stringify(borrow));
+    };
+    console.log(JSON.stringify(temp));
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(borrow),
+      body: JSON.stringify(temp),
     };
     const response = await fetch(
       "https://localhost:7274/Borrow",
       requestOptions
     );
     alert(response.status);
+    LoadEquipment();
   }
 
   async function LoadEquipment() {
@@ -62,6 +66,15 @@ const CreateBorrowPage = () => {
         "&available=true"
     );
     setEquipment(result);
+    try {
+      setEquipmentId(result[0].equipmentId);
+    } catch {
+      alert("Data not found");
+    }
+  }
+
+  if (1 === 1) {
+    return <div>Loading failed</div>;
   }
 
   return (

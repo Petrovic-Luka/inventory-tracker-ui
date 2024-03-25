@@ -15,6 +15,9 @@ const Menu = () => {
         <div className={style.meni_item}>
           <a href="/#/CreateBorrow">Borrow </a>
         </div>
+        <div className={style.meni_item}>
+          <a href="/#/ReturnBorrow">Return Borrow </a>
+        </div>
       </div>
     </div>
   );
