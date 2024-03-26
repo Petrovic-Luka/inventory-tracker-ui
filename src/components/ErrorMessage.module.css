@@ -1,0 +1,8 @@
+.LoadFailed {
+  font-size: 3rem;
+  text-align: center;
+}
+
+.LoadFailedContainer {
+  padding-top: 5rem;
+}

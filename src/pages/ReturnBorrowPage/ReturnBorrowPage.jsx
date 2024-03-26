@@ -28,9 +28,10 @@ const ReturnBorrowPage = () => {
     try {
       setEquipmentId(result[0].equipmentId);
     } catch {
-      alert("Data not found");
+      alert("No borrows found");
     }
   }
+
   async function sendPut() {
     console.log("Equipment " + equipmentId);
     console.log("Employee " + employeeId);
@@ -82,14 +83,16 @@ const ReturnBorrowPage = () => {
             setEquipmentId(e.target.value);
           }}
         >
-          {borrows.map((eq) => (
-            <option
-              key={eq.employeeId + eq.equipmentId}
-              value={eq.displayString}
-            >
-              {eq.displayString}
-            </option>
-          ))}
+          {borrows
+            ? borrows.map((eq) => (
+                <option
+                  key={eq.employeeId + eq.equipmentId}
+                  value={eq.displayString}
+                >
+                  {eq.displayString}
+                </option>
+              ))
+            : null}
         </select>
       </div>
 

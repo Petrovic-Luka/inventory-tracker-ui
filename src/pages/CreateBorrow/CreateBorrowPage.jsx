@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import style from "./CreateBorrowPage.module.css";
 import { fetchData } from "../../functions";
 import Menu from "../../components/Menu";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const CreateBorrowPage = () => {
-  const [borrow, SetBorrow] = useState([]);
   const [equipmentTypes, setEquipmentTypes] = useState([]);
   const [equipmentTypeId, setEquipmentTypeId] = useState(1);
   const [equipment, setEquipment] = useState([]);
@@ -29,8 +29,7 @@ const CreateBorrowPage = () => {
         setClassRooms(postsData3);
         setClassRoomId(postsData3[0].classRoomId);
       } catch (err) {
-        alert("Connection to server failed");
-        return;
+        console.log(err);
       }
     };
     fetchData2();
@@ -56,7 +55,9 @@ const CreateBorrowPage = () => {
       requestOptions
     );
     alert(response.status);
-    LoadEquipment();
+    if (response.status == 200) {
+      LoadEquipment();
+    }
   }
 
   async function LoadEquipment() {
@@ -72,83 +73,83 @@ const CreateBorrowPage = () => {
       alert("Data not found");
     }
   }
+  try {
+    return (
+      <div className={style.CreateBorrowPage}>
+        <Menu></Menu>
 
-  if (1 === 1) {
-    return <div>Loading failed</div>;
+        <div className={style.Container}>
+          <label>Equipment type</label>
+          <select
+            onChange={(e) => {
+              setEquipmentTypeId(e.target.value);
+              console.log(equipmentTypeId);
+            }}
+          >
+            {equipmentTypes.map((type) => (
+              <option key={type.equipmentTypeId} value={type.equipmentTypeId}>
+                {type.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className={style.Container}>
+          <label>Employee</label>
+          <select
+            onChange={(e) => {
+              setEmployeeId(e.target.value);
+            }}
+          >
+            {employees.map((employee) => (
+              <option key={employee.employeeId} value={employee.employeeId}>
+                {employee.mailAddress}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className={style.Container}>
+          <label>ClassRoom</label>
+          <select
+            onChange={(e) => {
+              setClassRoomId(e.target.value);
+            }}
+          >
+            {classRooms.map((classRoom) => (
+              <option key={classRoom.classRoomId} value={classRoom.classRoomId}>
+                {classRoom.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className={style.Container}>
+          <input
+            type="button"
+            value="Load equipment"
+            onClick={LoadEquipment}
+          ></input>
+          <label>Equipment</label>
+          <select
+            onChange={(e) => {
+              setEquipmentId(e.target.value);
+            }}
+          >
+            {equipment.map((eq) => (
+              <option key={eq.equipmentId} value={eq.equipmentId}>
+                {eq.description} {eq.inventoryMark}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button onClick={sendPost}>Create borrow </button>
+      </div>
+    );
+  } catch (e) {
+    console.error(e);
+    return <ErrorMessage></ErrorMessage>;
   }
-
-  return (
-    <div className={style.CreateBorrowPage}>
-      <Menu></Menu>
-
-      <div className={style.Container}>
-        <label>Equipment type</label>
-        <select
-          onChange={(e) => {
-            setEquipmentTypeId(e.target.value);
-            console.log(equipmentTypeId);
-          }}
-        >
-          {equipmentTypes.map((type) => (
-            <option key={type.equipmentTypeId} value={type.equipmentTypeId}>
-              {type.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className={style.Container}>
-        <label>Employee</label>
-        <select
-          onChange={(e) => {
-            setEmployeeId(e.target.value);
-          }}
-        >
-          {employees.map((employee) => (
-            <option key={employee.employeeId} value={employee.employeeId}>
-              {employee.mailAddress}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className={style.Container}>
-        <label>ClassRoom</label>
-        <select
-          onChange={(e) => {
-            setClassRoomId(e.target.value);
-          }}
-        >
-          {classRooms.map((classRoom) => (
-            <option key={classRoom.classRoomId} value={classRoom.classRoomId}>
-              {classRoom.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className={style.Container}>
-        <input
-          type="button"
-          value="Load equipment"
-          onClick={LoadEquipment}
-        ></input>
-        <label>Equipment</label>
-        <select
-          onChange={(e) => {
-            setEquipmentId(e.target.value);
-          }}
-        >
-          {equipment.map((eq) => (
-            <option key={eq.equipmentId} value={eq.equipmentId}>
-              {eq.description}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button onClick={sendPost}>Create borrow </button>
-    </div>
-  );
 };
 
 export default CreateBorrowPage;
