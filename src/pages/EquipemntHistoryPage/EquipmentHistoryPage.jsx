@@ -3,6 +3,8 @@ import style from "./EquipmentHistory.module.css";
 import { fetchData } from "../../functions";
 import Menu from "../../components/Menu";
 import ErrorMessage from "../../components/ErrorMessage";
+import ComboBox from "../../components/ComboBox";
+import DisplayTable from "../../components/DisplayTable";
 
 const EquipmentHistoryPage = () => {
   const [equipmentTypes, setEquipmentTypes] = useState([]);
@@ -57,18 +59,13 @@ const EquipmentHistoryPage = () => {
 
       <div className={style.Container}>
         <label>Equipment type</label>
-        <select
-          onChange={(e) => {
-            setEquipmentTypeId(e.target.value);
-            console.log(equipmentTypeId);
-          }}
-        >
-          {equipmentTypes.map((type) => (
-            <option key={type.equipmentTypeId} value={type.equipmentTypeId}>
-              {type.name}
-            </option>
-          ))}
-        </select>
+        <ComboBox
+          setValue={setEquipmentTypeId}
+          list={equipmentTypes}
+          key={"equipmentTypeId"}
+          value={"equipmentTypeId"}
+          text={"name"}
+        />
         <input
           type="button"
           value="Load equipment"
@@ -78,25 +75,15 @@ const EquipmentHistoryPage = () => {
 
       <div className={style.Container}>
         <label>Equipment</label>
-        <select
-          onChange={(e) => {
-            setEquipmentId(e.target.value);
-          }}
-        >
-          {equipment.map((eq) => (
-            <option key={eq.equipmentId} value={eq.equipmentId}>
-              {eq.description} {eq.inventoryMark}
-            </option>
-          ))}
-        </select>
+        <ComboBox
+          setValue={setEquipmentId}
+          list={equipment}
+          key={"equipmentId"}
+          value={"equipmentId"}
+          text={"displayString"}
+        />
         <input type="button" value="Load History" onClick={LoadHistory}></input>
-        <ul>
-          {borrows.map((eq, i) => (
-            <li key={eq.equipmentId + " " + i} value={eq.equipmentId}>
-              {eq.displayString}
-            </li>
-          ))}
-        </ul>
+        <DisplayTable list={borrows} text={"displayString"} />
       </div>
     </div>
   );

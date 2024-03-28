@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import style from "./ReturnBorrowPage.module.css";
 import { fetchData } from "../../functions";
 import Menu from "../../components/Menu";
+import ComboBox from "../../components/ComboBox";
+
 const ReturnBorrowPage = () => {
   const [employees, setEmployees] = useState([]);
   const [employeeId, setEmployeeId] = useState([]);
@@ -20,14 +22,18 @@ const ReturnBorrowPage = () => {
   }, []);
 
   async function LoadBorrows() {
-    const result = await fetchData(
-      "https://localhost:7274/Borrow/Employee?id=" + employeeId + "&active=true"
-    );
-    setBorrows(result);
-    console.log(result);
     try {
+      const result = await fetchData(
+        "https://localhost:7274/Borrow/Employee?id=" +
+          employeeId +
+          "&active=true"
+      );
+      setBorrows(result);
+      console.log(result);
+
       setEquipmentId(result[0].equipmentId);
     } catch {
+      setBorrows([]);
       alert("No borrows found");
     }
   }
@@ -59,17 +65,13 @@ const ReturnBorrowPage = () => {
       <Menu> </Menu>
       <div className={style.Container}>
         <label>Employee</label>
-        <select
-          onChange={(e) => {
-            setEmployeeId(e.target.value);
-          }}
-        >
-          {employees.map((employee) => (
-            <option key={employee.employeeId} value={employee.employeeId}>
-              {employee.mailAddress}
-            </option>
-          ))}
-        </select>
+        <ComboBox
+          list={employees}
+          key={"employeeId"}
+          value={"employeeId"}
+          text={"mailAddress"}
+          setValue={setEmployeeId}
+        />
       </div>
       <div className={style.Container}>
         <input
@@ -78,22 +80,13 @@ const ReturnBorrowPage = () => {
           onClick={LoadBorrows}
         ></input>
         <label>Borrows</label>
-        <select
-          onChange={(e) => {
-            setEquipmentId(e.target.value);
-          }}
-        >
-          {borrows
-            ? borrows.map((eq) => (
-                <option
-                  key={eq.employeeId + eq.equipmentId}
-                  value={eq.displayString}
-                >
-                  {eq.displayString}
-                </option>
-              ))
-            : null}
-        </select>
+        <ComboBox
+          list={borrows}
+          key={"startDate"}
+          value={"employeeId"}
+          text={"displayString"}
+          setValue={setEmployeeId}
+        />
       </div>
 
       <div className={style.Container}>

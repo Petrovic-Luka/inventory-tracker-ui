@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import style from "./CreateBorrowPage.module.css";
 import { fetchData } from "../../functions";
 import Menu from "../../components/Menu";
+import ComboBox from "../../components/ComboBox";
 import ErrorMessage from "../../components/ErrorMessage";
 
 const CreateBorrowPage = () => {
@@ -24,12 +25,16 @@ const CreateBorrowPage = () => {
         const postsData2 = await fetchData("https://localhost:7274/Employee");
         setEmployees(postsData2);
         setEmployeeId(postsData2[0].employeeId);
-
         const postsData3 = await fetchData("https://localhost:7274/ClassRoom");
         setClassRooms(postsData3);
         setClassRoomId(postsData3[0].classRoomId);
       } catch (err) {
+        setEquipmentTypes([]);
+        setEmployees([]);
+        setClassRooms([]);
         console.log(err);
+        alert(err);
+        return;
       }
     };
     fetchData2();
@@ -61,16 +66,17 @@ const CreateBorrowPage = () => {
   }
 
   async function LoadEquipment() {
-    const result = await fetchData(
-      "https://localhost:7274/Equipment/type?typeId=" +
-        equipmentTypeId +
-        "&available=true"
-    );
-    setEquipment(result);
     try {
+      const result = await fetchData(
+        "https://localhost:7274/Equipment/type?typeId=" +
+          equipmentTypeId +
+          "&available=true"
+      );
+      setEquipment(result);
+
       setEquipmentId(result[0].equipmentId);
-    } catch {
-      alert("Data not found");
+    } catch (e) {
+      alert("No awailable equipment found");
     }
   }
   try {
@@ -80,48 +86,35 @@ const CreateBorrowPage = () => {
 
         <div className={style.Container}>
           <label>Equipment type</label>
-          <select
-            onChange={(e) => {
-              setEquipmentTypeId(e.target.value);
-              console.log(equipmentTypeId);
-            }}
-          >
-            {equipmentTypes.map((type) => (
-              <option key={type.equipmentTypeId} value={type.equipmentTypeId}>
-                {type.name}
-              </option>
-            ))}
-          </select>
+          <ComboBox
+            list={equipmentTypes}
+            setValue={setEquipmentTypeId}
+            key={"equipmentTypeId"}
+            value={"equipmentTypeId"}
+            text={"name"}
+          />
         </div>
 
         <div className={style.Container}>
           <label>Employee</label>
-          <select
-            onChange={(e) => {
-              setEmployeeId(e.target.value);
-            }}
-          >
-            {employees.map((employee) => (
-              <option key={employee.employeeId} value={employee.employeeId}>
-                {employee.mailAddress}
-              </option>
-            ))}
-          </select>
+          <ComboBox
+            list={employees}
+            setValue={setEmployeeId}
+            key={"employeeId"}
+            value={"employeeId"}
+            text={"mailAddress"}
+          />
         </div>
 
         <div className={style.Container}>
           <label>ClassRoom</label>
-          <select
-            onChange={(e) => {
-              setClassRoomId(e.target.value);
-            }}
-          >
-            {classRooms.map((classRoom) => (
-              <option key={classRoom.classRoomId} value={classRoom.classRoomId}>
-                {classRoom.name}
-              </option>
-            ))}
-          </select>
+          <ComboBox
+            list={classRooms}
+            setValue={setClassRoomId}
+            key={"classRoomId"}
+            value={"classRoomId"}
+            text={"name"}
+          />
         </div>
 
         <div className={style.Container}>
@@ -131,7 +124,7 @@ const CreateBorrowPage = () => {
             onClick={LoadEquipment}
           ></input>
           <label>Equipment</label>
-          <select
+          {/* <select
             onChange={(e) => {
               setEquipmentId(e.target.value);
             }}
@@ -141,7 +134,14 @@ const CreateBorrowPage = () => {
                 {eq.description} {eq.inventoryMark}
               </option>
             ))}
-          </select>
+          </select> */}
+          <ComboBox
+            list={equipment}
+            setValue={setClassRoomId}
+            key={"equipmentId"}
+            value={"equipmentId"}
+            text={"displayString"}
+          />
         </div>
         <button onClick={sendPost}>Create borrow </button>
       </div>
