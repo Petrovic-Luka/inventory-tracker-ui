@@ -22,7 +22,6 @@ const CreateEquipmentPage = () => {
         );
         setEquipmentTypes(postsData);
       } catch (err) {
-        console.error(err);
         alert(err.message);
       }
     }
@@ -46,9 +45,12 @@ const CreateEquipmentPage = () => {
         "https://localhost:7274/Equipment",
         requestOptions
       );
-      alert(response.status);
+      alert(await response.text());
+      if (response.ok) {
+        window.location.reload();
+      }
     } catch (err) {
-      alert(err.message);
+      alert(err);
     }
   }
   return (
