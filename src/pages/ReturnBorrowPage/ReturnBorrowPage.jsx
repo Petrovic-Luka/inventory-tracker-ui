@@ -3,20 +3,32 @@ import style from "./ReturnBorrowPage.module.css";
 import { fetchData } from "../../functions";
 import Menu from "../../components/Menu";
 import ComboBox from "../../components/ComboBox";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const ReturnBorrowPage = () => {
   const [employees, setEmployees] = useState([]);
-  const [employeeId, setEmployeeId] = useState([]);
+  const [employeeId, setEmployeeId] = useState("");
   const [borrows, setBorrows] = useState([]);
-  const [equipmentId, setEquipmentId] = useState([]);
+  const [equipmentId, setEquipmentId] = useState("");
+  const [connectionFailed, setConnectionFailed] = useState(false);
 
   useEffect(() => {
     const fetchData2 = async () => {
       try {
         const postsData2 = await fetchData("https://localhost:7274/Employee");
         setEmployees(postsData2);
-        setEmployeeId(postsData2[0].employeeId);
-      } catch (err) {}
+        try {
+          setEmployeeId(postsData2[0].employeeId);
+        } catch {
+          alert("No employees found");
+          return;
+        }
+      } catch (err) {
+        console.log(err);
+        setConnectionFailed(true);
+        alert(err);
+        return;
+      }
     };
     fetchData2();
   }, []);
@@ -41,7 +53,10 @@ const ReturnBorrowPage = () => {
   async function sendPut() {
     console.log("Equipment " + equipmentId);
     console.log("Employee " + employeeId);
-
+    if (equipmentId === "") {
+      alert("Please select equipment");
+      return;
+    }
     let temp = {
       employeeId: employeeId,
       equipmentId: equipmentId,
@@ -56,10 +71,13 @@ const ReturnBorrowPage = () => {
       "https://localhost:7274/Borrow/Return",
       requestOptions
     );
-    alert(response.status);
+    alert(await response.text());
     LoadBorrows();
   }
 
+  if (connectionFailed) {
+    return <ErrorMessage></ErrorMessage>;
+  }
   return (
     <div className={style.ReturnBorrowPage}>
       <Menu> </Menu>

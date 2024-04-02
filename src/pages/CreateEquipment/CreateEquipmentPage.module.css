@@ -14,5 +14,32 @@
 }
 
 .Container input {
-  font-size: 1.5rem;
+  font-size: 1rem;
+  border-radius: 1rem;
+  padding: 5px 10px;
+  background-color: white;
+  border-color: orange;
+  color: black;
+}
+
+.Container input[type="button"] {
+  font-size: 1.2rem;
+}
+
+.Container select {
+  font-size: 1rem;
+  background-color: white;
+  border-color: orange;
+  color: black;
+}
+
+option {
+  font-size: 1rem;
+  background-color: white;
+  border-color: orange;
+  color: black;
+}
+
+.errorClass {
+  border: 2px solid red !important;
 }

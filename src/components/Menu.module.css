@@ -4,8 +4,9 @@
   justify-content: center;
   gap: 7vw;
   z-index: 9;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid white;
   overflow-x: hidden;
+  padding: 1rem 0;
 }
 
 .meni_container {
@@ -18,5 +19,5 @@
   font-weight: normal;
   text-decoration: none;
   font-size: 1.5rem;
-  color: black;
+  color: white;
 }

@@ -11,6 +11,8 @@ const CreateEquipmentPage = () => {
   const [inventoryMark, setInventoryMark] = useState("");
   const [serialMark, setSerialMark] = useState("");
   const [equipmentTypeId, setEquipmentTypeId] = useState(1);
+  const [connectionFailed, setConnectionFailed] = useState(false);
+  const [error, setError] = useState(false);
 
   const loadingFailed = false;
 
@@ -22,16 +24,24 @@ const CreateEquipmentPage = () => {
         );
         setEquipmentTypes(postsData);
       } catch (err) {
-        alert(err.message);
+        console.log(err);
+        setConnectionFailed(true);
+        alert(err);
       }
     }
+
     fetchData2();
   }, []);
 
   async function sendPost() {
     try {
+      if (!validateData()) {
+        alert("Podaci nisu ispravno uneti");
+        return;
+      }
       var temp = {
         description: description,
+        note: note,
         inventoryMark: inventoryMark,
         serialMark: serialMark,
         equipmentTypeId: equipmentTypeId,
@@ -50,8 +60,24 @@ const CreateEquipmentPage = () => {
         window.location.reload();
       }
     } catch (err) {
-      alert(err);
+      alert(err.message);
     }
+  }
+
+  function validateData() {
+    if (
+      description === "" ||
+      inventoryMark.length !== 10 ||
+      serialMark.length !== 10
+    ) {
+      setError(true);
+      return false;
+    }
+    return true;
+  }
+
+  if (connectionFailed) {
+    return <ErrorMessage></ErrorMessage>;
   }
   return (
     <div className={style.CreateEquipmentPage}>
@@ -61,6 +87,7 @@ const CreateEquipmentPage = () => {
         <input
           type="text"
           id="description"
+          className={`${description === "" && error ? style.errorClass : ""}`}
           onChange={(e) => {
             setDescription(e.target.value);
           }}
@@ -83,6 +110,9 @@ const CreateEquipmentPage = () => {
         <input
           type="text"
           id="Inventory Mark"
+          className={`${
+            inventoryMark.length !== 10 && error ? style.errorClass : ""
+          }`}
           onChange={(e) => {
             setInventoryMark(e.target.value);
           }}
@@ -94,19 +124,23 @@ const CreateEquipmentPage = () => {
         <input
           type="text"
           id="Serial Mark"
+          className={`${
+            serialMark.length !== 10 && error ? style.errorClass : ""
+          }`}
           onChange={(e) => {
             setSerialMark(e.target.value);
           }}
         ></input>
       </div>
-      <ComboBox
-        setValue={setEquipmentTypeId}
-        list={equipmentTypes}
-        key={"equipmentTypeId"}
-        value={"equipmentTypeId"}
-        text={"name"}
-      />
-
+      <div className={style.Container}>
+        <ComboBox
+          setValue={setEquipmentTypeId}
+          list={equipmentTypes}
+          key={"equipmentTypeId"}
+          value={"equipmentTypeId"}
+          text={"name"}
+        />
+      </div>
       <div className={style.Container}>
         <input
           value="Add equipment"

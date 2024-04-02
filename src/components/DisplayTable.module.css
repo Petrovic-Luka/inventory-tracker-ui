@@ -1,5 +1,12 @@
 table,
 tr,
 td {
-  border: 1px solid black;
+  border: 1px solid orange;
+  background-color: white;
+  color: black;
+}
+
+tr,
+td {
+  padding: 5px;
 }

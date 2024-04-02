@@ -10,8 +10,9 @@ const EquipmentHistoryPage = () => {
   const [equipmentTypes, setEquipmentTypes] = useState([]);
   const [equipmentTypeId, setEquipmentTypeId] = useState(1);
   const [equipment, setEquipment] = useState([]);
-  const [equipmentId, setEquipmentId] = useState([]);
+  const [equipmentId, setEquipmentId] = useState("");
   const [borrows, SetBorrows] = useState([]);
+  const [connectionFailed, setConnectionFailed] = useState(false);
 
   useEffect(() => {
     const fetchData2 = async () => {
@@ -20,30 +21,41 @@ const EquipmentHistoryPage = () => {
           "https://localhost:7274/EquipmentType"
         );
         setEquipmentTypes(postsData);
-        const postsData2 = await fetchData("https://localhost:7274/Employee");
       } catch (err) {
         console.log(err);
+        setConnectionFailed(true);
+        alert(err);
       }
     };
     fetchData2();
   }, []);
 
   async function LoadEquipment() {
-    const result = await fetchData(
-      "https://localhost:7274/Equipment/type?typeId=" +
-        equipmentTypeId +
-        "&available=false"
-    );
-    setEquipment(result);
-    console.log(result);
     try {
-      setEquipmentId(result[0].equipmentId);
-    } catch {
-      alert("Data not found");
+      const result = await fetchData(
+        "https://localhost:7274/Equipment/type?typeId=" +
+          equipmentTypeId +
+          "&available=false"
+      );
+      setEquipment(result);
+
+      console.log(result);
+      try {
+        setEquipmentId(result[0].equipmentId);
+      } catch {
+        alert("Data not found");
+        return;
+      }
+    } catch (err) {
+      alert(err.message);
     }
   }
 
   async function LoadHistory() {
+    if (equipmentId === "") {
+      alert("Please select equipment");
+      return;
+    }
     const result = await fetchData(
       "https://localhost:7274/Borrow/Equipment?id=" +
         equipmentId +
@@ -52,6 +64,9 @@ const EquipmentHistoryPage = () => {
     SetBorrows(result);
     console.log("History ---------------------");
     console.log(result);
+  }
+  if (connectionFailed) {
+    return <ErrorMessage></ErrorMessage>;
   }
   return (
     <div className={style.EquipmentHistoryPage}>
