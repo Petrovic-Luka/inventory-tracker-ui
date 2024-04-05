@@ -13,7 +13,8 @@ const EquipmentHistoryPage = () => {
   const [equipmentId, setEquipmentId] = useState("");
   const [borrows, SetBorrows] = useState([]);
   const [connectionFailed, setConnectionFailed] = useState(false);
-
+  const [status, setStatus] = useState(3);
+  const [enableStatusChange, setEnableStatusChange] = useState(true);
   useEffect(() => {
     const fetchData2 = async () => {
       try {
@@ -38,10 +39,10 @@ const EquipmentHistoryPage = () => {
           "&available=false"
       );
       setEquipment(result);
-
       console.log(result);
       try {
         setEquipmentId(result[0].equipmentId);
+        let enabled = result[0].status === 0;
       } catch {
         alert("Data not found");
         return;
@@ -65,6 +66,44 @@ const EquipmentHistoryPage = () => {
     console.log("History ---------------------");
     console.log(result);
   }
+
+  async function ChangeStatus() {
+    try {
+      const index = equipment.find((x) => x.equipmentId === equipmentId);
+      console.log(index);
+      if (index.status !== 0) {
+        alert("Equipent is not available");
+        return;
+      }
+    } catch (err) {
+      alert(err.message);
+      return;
+    }
+
+    try {
+      let temp = {
+        equipmentId: equipmentId,
+        status: status,
+      };
+      console.log(JSON.stringify(temp));
+      const requestOptions = {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(temp),
+      };
+      const response = await fetch(
+        "https://localhost:7274/Equipment/retire",
+        requestOptions
+      );
+      alert(await response.text());
+      if (response.status == 200) {
+        LoadEquipment();
+      }
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
   if (connectionFailed) {
     return <ErrorMessage></ErrorMessage>;
   }
@@ -97,9 +136,32 @@ const EquipmentHistoryPage = () => {
           value={"equipmentId"}
           text={"displayString"}
         />
-        <input type="button" value="Load History" onClick={LoadHistory}></input>
-        <DisplayTable list={borrows} text={"displayString"} />
+        <label value="WrittenOff" className={`${true ? style.invis : ""}`}>
+          Written off
+        </label>
+        <div className={style.horizontal}>
+          <input
+            type="button"
+            value="Load History"
+            onClick={LoadHistory}
+          ></input>
+          <input
+            type="button"
+            value="Change status"
+            onClick={ChangeStatus}
+          ></input>
+          <select
+            onChange={(e) => {
+              setStatus(e.target.value);
+              console.log(e.target.value);
+            }}
+          >
+            <option value="3">Writeen Off</option>
+            <option value="4">Expended</option>
+          </select>
+        </div>
       </div>
+      <DisplayTable list={borrows} text={"displayString"} />
     </div>
   );
 };
