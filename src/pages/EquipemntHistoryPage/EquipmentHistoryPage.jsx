@@ -13,8 +13,13 @@ const EquipmentHistoryPage = () => {
   const [equipmentId, setEquipmentId] = useState("");
   const [borrows, SetBorrows] = useState([]);
   const [connectionFailed, setConnectionFailed] = useState(false);
-  const [status, setStatus] = useState(3);
-  const [enableStatusChange, setEnableStatusChange] = useState(true);
+  const [status, setStatus] = useState(2);
+  const [equipmentStatus, setEquipmentStatus] = useState(0);
+
+  useEffect(() => {
+    test();
+  }, [equipmentId]);
+
   useEffect(() => {
     const fetchData2 = async () => {
       try {
@@ -31,6 +36,18 @@ const EquipmentHistoryPage = () => {
     fetchData2();
   }, []);
 
+  function test() {
+    const index = equipment.find((x) => x.equipmentId === equipmentId);
+    if (index === undefined) {
+      console.log("Equipment was undefined");
+      return;
+    }
+    setEquipmentStatus(index.status);
+    console.log("Index");
+    console.log(index);
+    console.log(index.status);
+  }
+
   async function LoadEquipment() {
     try {
       const result = await fetchData(
@@ -41,8 +58,11 @@ const EquipmentHistoryPage = () => {
       setEquipment(result);
       console.log(result);
       try {
-        setEquipmentId(result[0].equipmentId);
-        let enabled = result[0].status === 0;
+        if (equipmentId === "") {
+          setEquipmentId(result[0].equipmentId);
+        } else {
+          test();
+        }
       } catch {
         alert("Data not found");
         return;
@@ -68,18 +88,20 @@ const EquipmentHistoryPage = () => {
   }
 
   async function ChangeStatus() {
-    try {
-      const index = equipment.find((x) => x.equipmentId === equipmentId);
-      console.log(index);
-      if (index.status !== 0) {
-        alert("Equipent is not available");
-        return;
-      }
-    } catch (err) {
-      alert(err.message);
+    if (equipmentId === "") {
+      alert("Please select equipment");
       return;
     }
-
+    if (equipmentStatus === 1 || equipmentStatus === 3) {
+      console.log(equipmentStatus);
+      console.log(status);
+      alert("Status change not posible");
+      return;
+    }
+    if (equipmentStatus === 2 && status != 3) {
+      alert("Status change not posible");
+      return;
+    }
     try {
       let temp = {
         equipmentId: equipmentId,
@@ -97,7 +119,7 @@ const EquipmentHistoryPage = () => {
       );
       alert(await response.text());
       if (response.status == 200) {
-        LoadEquipment();
+        await LoadEquipment();
       }
     } catch (err) {
       alert(err.message);
@@ -136,8 +158,17 @@ const EquipmentHistoryPage = () => {
           value={"equipmentId"}
           text={"displayString"}
         />
-        <label value="WrittenOff" className={`${true ? style.invis : ""}`}>
+        <label
+          value="WrittenOff"
+          className={`${equipmentStatus === 2 ? "" : style.invis}`}
+        >
           Written off
+        </label>
+        <label
+          value="WrittenOff"
+          className={`${equipmentStatus === 3 ? "" : style.invis}`}
+        >
+          Expended
         </label>
         <div className={style.horizontal}>
           <input
@@ -156,8 +187,8 @@ const EquipmentHistoryPage = () => {
               console.log(e.target.value);
             }}
           >
-            <option value="3">Writeen Off</option>
-            <option value="4">Expended</option>
+            <option value="2">Writeen Off</option>
+            <option value="3">Expended</option>
           </select>
         </div>
       </div>

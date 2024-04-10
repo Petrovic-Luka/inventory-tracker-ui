@@ -27,6 +27,9 @@ const CreateBorrowPage = () => {
         setEquipmentTypes(postsData);
         setEmployees(postsData2);
         setClassRooms(postsData3);
+        setEmployeeId(postsData2[0].employeeId);
+        setClassRoomId(postsData3[0].classRoomId);
+        setEquipmentId(postsData[0].equipmentTypeId);
       } catch (err) {
         setEquipmentTypes([]);
         setEmployees([]);

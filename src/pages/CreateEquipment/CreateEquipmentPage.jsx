@@ -36,7 +36,7 @@ const CreateEquipmentPage = () => {
   async function sendPost() {
     try {
       if (!validateData()) {
-        alert("Podaci nisu ispravno uneti");
+        alert("Data not valid");
         return;
       }
       var temp = {
@@ -92,6 +92,13 @@ const CreateEquipmentPage = () => {
             setDescription(e.target.value);
           }}
         ></input>
+        <p
+          className={`${
+            description === "" && error ? style.errorTextClass : style.invis
+          }`}
+        >
+          This field can't be empty
+        </p>
       </div>
 
       <div className={style.Container}>
@@ -117,6 +124,15 @@ const CreateEquipmentPage = () => {
             setInventoryMark(e.target.value);
           }}
         ></input>
+        <p
+          className={`${
+            inventoryMark.length !== 10 && error
+              ? style.errorTextClass
+              : style.invis
+          }`}
+        >
+          This field must be 10 characters long
+        </p>
       </div>
 
       <div className={style.Container}>
@@ -131,6 +147,15 @@ const CreateEquipmentPage = () => {
             setSerialMark(e.target.value);
           }}
         ></input>
+        <p
+          className={`${
+            serialMark.length !== 10 && error
+              ? style.errorTextClass
+              : style.invis
+          }`}
+        >
+          This field must be 10 characters long
+        </p>
       </div>
       <div className={style.Container}>
         <ComboBox
