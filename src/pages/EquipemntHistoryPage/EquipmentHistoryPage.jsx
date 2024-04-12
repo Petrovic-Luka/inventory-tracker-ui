@@ -37,6 +37,10 @@ const EquipmentHistoryPage = () => {
   }, []);
 
   function test() {
+    if (equipmentStatus == 0) {
+      document.getElementById("wOff").className = style.invis;
+      document.getElementById("exp").className = style.invis;
+    }
     const index = equipment.find((x) => x.equipmentId === equipmentId);
     if (index === undefined) {
       console.log("Equipment was undefined");
@@ -46,6 +50,13 @@ const EquipmentHistoryPage = () => {
     console.log("Index");
     console.log(index);
     console.log(index.status);
+    console.log("logs");
+    if (index.status == 2) {
+      document.getElementById("exp").className = style.invis;
+    }
+    if (index.status == 3) {
+      document.getElementById("wOff").className = style.invis;
+    }
   }
 
   async function LoadEquipment() {
@@ -118,8 +129,15 @@ const EquipmentHistoryPage = () => {
         requestOptions
       );
       alert(await response.text());
-      if (response.status == 200) {
+      if (status) {
         await LoadEquipment();
+        if (status == 2) {
+          document.getElementById("wOff").className = "";
+          document.getElementById("exp").className = `${style.invis}`;
+        } else if (status == 3) {
+          document.getElementById("wOff").classList.add(style.invis);
+          document.getElementById("exp").className = "";
+        }
       }
     } catch (err) {
       alert(err.message);
@@ -161,12 +179,14 @@ const EquipmentHistoryPage = () => {
         <label
           value="WrittenOff"
           className={`${equipmentStatus === 2 ? "" : style.invis}`}
+          id="wOff"
         >
           Written off
         </label>
         <label
-          value="WrittenOff"
+          value="Expended"
           className={`${equipmentStatus === 3 ? "" : style.invis}`}
+          id="exp"
         >
           Expended
         </label>

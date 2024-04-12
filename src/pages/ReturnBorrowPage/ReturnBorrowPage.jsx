@@ -101,9 +101,9 @@ const ReturnBorrowPage = () => {
         <ComboBox
           list={borrows}
           key={"startDate"}
-          value={"employeeId"}
+          value={"equipmentId"}
           text={"displayString"}
-          setValue={setEmployeeId}
+          setValue={setEquipmentId}
         />
       </div>
 
