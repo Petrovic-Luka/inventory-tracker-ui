@@ -1,0 +1,75 @@
+.pr_obavestenje_container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+.pr_obavestenje {
+  text-align: center;
+  font-size: 2rem;
+  font-family: "Jost", "sans-serif";
+  color: white;
+  margin-top: 5rem;
+  align-self: center;
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.pr_obavestenje:hover {
+  cursor: pointer;
+}
+
+#pr_odgovor_id {
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.rd_radionicaModal {
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  border: 0;
+  position: fixed;
+  left: 0;
+  white-space: pre-wrap;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.rd_radionicaModal::before {
+  position: absolute;
+  overflow-x: hidden;
+
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(0.5rem);
+  top: 0;
+  left: 0;
+  content: " ";
+  width: 100%;
+  height: 100%;
+  z-index: -5;
+}
+
+.rd_background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -50;
+}
+
+.rd_radionicaModalcontainer {
+  display: flex;
+  flex-direction: row;
+  border: 0;
+  width: 75%;
+  height: 90%;
+  padding: 1rem;
+  padding-top: 2rem;
+}

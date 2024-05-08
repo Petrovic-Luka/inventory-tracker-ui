@@ -10,3 +10,9 @@ tr,
 td {
   padding: 5px;
 }
+
+.DisplayTable {
+  display: block;
+  max-height: 25rem;
+  overflow-y: scroll !important;
+}

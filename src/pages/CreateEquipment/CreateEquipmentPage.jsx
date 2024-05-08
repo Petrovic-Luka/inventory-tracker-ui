@@ -4,7 +4,12 @@ import { fetchData } from "../../functions";
 import Menu from "../../components/Menu";
 import ErrorMessage from "../../components/ErrorMessage";
 import ComboBox from "../../components/ComboBox";
+import DisplayMessage from "../../components/DisplayMessage";
+
 const CreateEquipmentPage = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
   const [equipmentTypes, setEquipmentTypes] = useState([]);
   const [description, setDescription] = useState("");
   const [note, setNote] = useState("");
@@ -18,16 +23,22 @@ const CreateEquipmentPage = () => {
 
   useEffect(() => {
     async function fetchData2() {
+      setOpenModal(true);
+      setModalMessage("Loading");
       try {
         const postsData = await fetchData(
           "https://localhost:7274/EquipmentType"
         );
         setEquipmentTypes(postsData);
       } catch (err) {
-        console.log(err);
+        setOpenModal(true);
+        setModalMessage(err.message);
+        console.error(err);
         setConnectionFailed(true);
-        alert(err);
+        setOpenModal(true);
+        setModalMessage(err);
       }
+      setOpenModal(false);
     }
 
     fetchData2();
@@ -36,9 +47,14 @@ const CreateEquipmentPage = () => {
   async function sendPost() {
     try {
       if (!validateData()) {
-        alert("Data not valid");
+        setOpenModal(true);
+        setModalMessage("Data not valid");
         return;
       }
+
+      setOpenModal(true);
+      setModalMessage("Sending");
+
       var temp = {
         description: description,
         note: note,
@@ -55,12 +71,22 @@ const CreateEquipmentPage = () => {
         "https://localhost:7274/Equipment",
         requestOptions
       );
-      alert(await response.text());
+      setOpenModal(true);
+      setModalMessage(await response.text());
       if (response.ok) {
-        window.location.reload();
+        document.getElementById("description").value = "";
+        setDescription("");
+        document.getElementById("Note").value = "";
+        setNote("");
+        document.getElementById("Inventory Mark").value = "";
+        setInventoryMark("");
+        document.getElementById("Serial Mark").value = "";
+        setSerialMark("");
+        setError(false);
       }
     } catch (err) {
-      alert(err.message);
+      setOpenModal(true);
+      setModalMessage(err.message);
     }
   }
 
@@ -82,6 +108,11 @@ const CreateEquipmentPage = () => {
   return (
     <div className={style.CreateEquipmentPage}>
       <Menu></Menu>
+      <DisplayMessage
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        text={modalMessage}
+      />
       <div className={style.Container}>
         <label for="description">Description</label>
         <input

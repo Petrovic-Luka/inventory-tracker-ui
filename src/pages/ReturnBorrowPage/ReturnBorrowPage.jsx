@@ -4,10 +4,13 @@ import { fetchData } from "../../functions";
 import Menu from "../../components/Menu";
 import ComboBox from "../../components/ComboBox";
 import ErrorMessage from "../../components/ErrorMessage";
+import DisplayMessage from "../../components/DisplayMessage";
 
 const ReturnBorrowPage = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const [employees, setEmployees] = useState([]);
-  const [employeeId, setEmployeeId] = useState("");
+  const [employeeEmail, setEmployeeEmail] = useState("");
   const [borrows, setBorrows] = useState([]);
   const [equipmentId, setEquipmentId] = useState("");
   const [connectionFailed, setConnectionFailed] = useState(false);
@@ -15,20 +18,24 @@ const ReturnBorrowPage = () => {
   useEffect(() => {
     const fetchData2 = async () => {
       try {
+        setOpenModal(true);
+        setModalMessage("Loading");
         const postsData2 = await fetchData("https://localhost:7274/Employee");
         setEmployees(postsData2);
         try {
-          setEmployeeId(postsData2[0].employeeId);
         } catch {
-          alert("No employees found");
+          setOpenModal(true);
+          setModalMessage("No employees found");
           return;
         }
       } catch (err) {
         console.log(err);
         setConnectionFailed(true);
-        alert(err);
+        setOpenModal(true);
+        setModalMessage(err.message);
         return;
       }
+      setOpenModal(false);
     };
     fetchData2();
   }, []);
@@ -36,29 +43,31 @@ const ReturnBorrowPage = () => {
   async function LoadBorrows() {
     try {
       const result = await fetchData(
-        "https://localhost:7274/Borrow/Employee?id=" +
-          employeeId +
+        "https://localhost:7274/Borrow/Employee?email=" +
+          employeeEmail +
           "&active=true"
       );
       setBorrows(result);
       console.log(result);
 
       setEquipmentId(result[0].equipmentId);
-    } catch {
+    } catch (err) {
       setBorrows([]);
-      alert("No borrows found");
+      setOpenModal(true);
+      setModalMessage("No borrows found");
     }
   }
 
   async function sendPut() {
     console.log("Equipment " + equipmentId);
-    console.log("Employee " + employeeId);
+    console.log("Employee " + employeeEmail);
     if (equipmentId === "") {
-      alert("Please select equipment");
+      setOpenModal(true);
+      setModalMessage("Please select equipment");
       return;
     }
     let temp = {
-      employeeId: employeeId,
+      employeeMailAdress: employeeEmail,
       equipmentId: equipmentId,
     };
     console.log(JSON.stringify(temp));
@@ -71,7 +80,8 @@ const ReturnBorrowPage = () => {
       "https://localhost:7274/Borrow/Return",
       requestOptions
     );
-    alert(await response.text());
+    setOpenModal(true);
+    setModalMessage(await response.text());
     LoadBorrows();
   }
 
@@ -81,15 +91,20 @@ const ReturnBorrowPage = () => {
   return (
     <div className={style.ReturnBorrowPage}>
       <Menu> </Menu>
+      <DisplayMessage
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        text={modalMessage}
+      />
       <div className={style.Container}>
-        <label>Employee</label>
-        <ComboBox
-          list={employees}
-          key={"employeeId"}
-          value={"employeeId"}
-          text={"mailAddress"}
-          setValue={setEmployeeId}
-        />
+        <label>Employee email</label>
+        <input
+          type="text"
+          id="description"
+          onChange={(e) => {
+            setEmployeeEmail(e.target.value);
+          }}
+        ></input>
       </div>
       <div className={style.Container}>
         <input
