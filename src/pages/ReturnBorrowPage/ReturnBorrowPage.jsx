@@ -5,11 +5,13 @@ import Menu from "../../components/Menu";
 import ComboBox from "../../components/ComboBox";
 import ErrorMessage from "../../components/ErrorMessage";
 import DisplayMessage from "../../components/DisplayMessage";
+import DisplayTable from "../../components/DisplayTable";
 
 const ReturnBorrowPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [employees, setEmployees] = useState([]);
+  const [employeesHistory, setEmployeesHistory] = useState([]);
   const [employeeEmail, setEmployeeEmail] = useState("");
   const [borrows, setBorrows] = useState([]);
   const [equipmentId, setEquipmentId] = useState("");
@@ -48,6 +50,7 @@ const ReturnBorrowPage = () => {
           "&active=true"
       );
       setBorrows(result);
+      setEmployeesHistory([]);
       console.log(result);
 
       setEquipmentId(result[0].equipmentId);
@@ -55,6 +58,22 @@ const ReturnBorrowPage = () => {
       setBorrows([]);
       setOpenModal(true);
       setModalMessage("No borrows found");
+    }
+  }
+
+  async function LoadHistory() {
+    try {
+      const result = await fetchData(
+        "https://localhost:7274/Borrow/Employee?email=" +
+          employeeEmail +
+          "&active=false"
+      );
+      setEmployeesHistory(result);
+      console.log(result);
+    } catch (err) {
+      setBorrows([]);
+      setOpenModal(true);
+      setModalMessage("Search failed");
     }
   }
 
@@ -97,34 +116,48 @@ const ReturnBorrowPage = () => {
         text={modalMessage}
       />
       <div className={style.Container}>
-        <label>Employee email</label>
-        <input
-          type="text"
-          id="description"
-          onChange={(e) => {
-            setEmployeeEmail(e.target.value);
-          }}
-        ></input>
-      </div>
-      <div className={style.Container}>
-        <input
-          type="button"
-          value="Load equipment"
-          onClick={LoadBorrows}
-        ></input>
-        <label>Borrows</label>
-        <ComboBox
-          list={borrows}
-          key={"startDate"}
-          value={"equipmentId"}
-          text={"displayString"}
-          setValue={setEquipmentId}
-        />
-      </div>
+        <div className={style.Container}>
+          <label>Employee email</label>
+          <input
+            type="text"
+            id="description"
+            onChange={(e) => {
+              setEmployeeEmail(e.target.value);
+            }}
+          ></input>
+        </div>
+        <div className={`${style.Container} ${style.Horizontal}`}>
+          <input
+            type="button"
+            value="Load equipment"
+            onClick={LoadBorrows}
+          ></input>
+          <input
+            type="button"
+            value="Search employees history"
+            onClick={LoadHistory}
+          ></input>
+        </div>
+        <div className={style.Container}>
+          <label>Borrows</label>
+          <ComboBox
+            list={borrows}
+            key={"startDate"}
+            value={"equipmentId"}
+            text={"displayString"}
+            setValue={setEquipmentId}
+          />
+        </div>
 
-      <div className={style.Container}>
-        <input type="button" value="Return equipment" onClick={sendPut}></input>
+        <div className={style.Container}>
+          <input
+            type="button"
+            value="Return equipment"
+            onClick={sendPut}
+          ></input>
+        </div>
       </div>
+      <DisplayTable list={employeesHistory} text={"displayString"} />
     </div>
   );
 };

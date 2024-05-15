@@ -5,6 +5,7 @@ import CreateBorrowPage from "./pages/CreateBorrow/CreateBorrowPage";
 import ReturnBorrowPage from "./pages/ReturnBorrowPage/ReturnBorrowPage";
 import EquipmentHistoryPage from "./pages/EquipemntHistoryPage/EquipmentHistoryPage";
 import "./App.css";
+import EmployeesPage from "./pages/Employees/EmployeesPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             exact
             element={<EquipmentHistoryPage />}
           />
+          <Route path="/Employee" exact element={<EmployeesPage />} />
         </Routes>
       </Router>
     </>
